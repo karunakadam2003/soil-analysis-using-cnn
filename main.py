@@ -1,12 +1,12 @@
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
 from tensorflow.keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
-
 from tensorflow.keras import layers, models
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-
 
 # Set the path to your main dataset directory
 main_dataset_dir = 'C:/Users/ADMIN/Desktop/Soil_Water_Analysis_Application/dataset/Soil types'
@@ -60,7 +60,6 @@ train_datagen = ImageDataGenerator(
 
 train_generator = train_datagen.flow(X_train, y_train, batch_size=32)
 
-
 model = models.Sequential()
 model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 3)))
 model.add(layers.MaxPooling2D((2, 2)))
@@ -82,6 +81,6 @@ history = model.fit(train_generator, epochs=10, validation_data=(X_test, y_test)
 test_loss, test_acc = model.evaluate(X_test, y_test)
 print(f'Test accuracy: {test_acc}')
 
-# Save the trained CNN model
-model.save('soil_cnn_model.h5')
-np.save('label_encoder_classes.npy', label_encoder.classes_)
+# Save the trained model and LabelEncoder using pickle
+with open('soil_cnn_model.pkl', 'wb') as f:
+    pickle.dump((model, label_encoder), f)
